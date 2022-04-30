@@ -1,0 +1,32 @@
+name: Publish to Github Packages
+
+on:
+  push:
+    branches:
+      - v0.x
+
+jobs:
+  build-and-publish:
+    name: Build and Publish
+    runs-on: ubuntu-20.04
+    env:
+      POINTR_PKG_TOKEN: ${{secrets.PUBLISH_PKG_TOKEN}}
+    steps:
+      - name: Build - Git Checkout
+        uses: actions/checkout@v2
+      - name: Build - Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14
+          registry-url: https://npm.pkg.github.com/
+          scope: '@BoardMe'
+      - name: Build - NPM Install
+        run: npm install
+      - name: Test - Running tests
+        run: npm test -- --coverage
+      - name: Build - NPM Build
+        run: npm run build
+      - name: Deploy - NPM Publish
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
