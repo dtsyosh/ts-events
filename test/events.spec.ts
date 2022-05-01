@@ -1,6 +1,7 @@
 import 'reflect-metadata'
 import { container } from 'tsyringe'
 import { PointrEventListener, PointrEvents, TriggersOn } from '../lib'
+import { TriggersOnClass } from '../lib/decorators/triggers-on'
 
 describe('test events', () => {
   it('should add metadata to class with decorator', () => {
@@ -183,5 +184,40 @@ describe('test events', () => {
     expect(TestClass.prototype.test).toHaveBeenCalledTimes(1)
     expect(TestClass2.prototype.test).toHaveBeenCalledTimes(2)
     expect(TestClass2.prototype.test2).toHaveBeenCalledTimes(1)
+  })
+
+  it.only('should dispatch events correctly using class decorators with params', async () => {
+    const EVENT_NAME = 'test'
+
+    @TriggersOnClass(EVENT_NAME)
+    class TestClass implements PointrEventListener {
+      test(params: unknown) {
+        return params
+      }
+
+      test2(params: unknown) {
+        return params
+      }
+    }
+
+    jest.spyOn(TestClass.prototype, 'test')
+    jest.spyOn(TestClass.prototype, 'test2')
+
+    container.register('PointrEventListener', { useClass: TestClass })
+
+    const events = new PointrEvents({
+      events: [EVENT_NAME],
+      container,
+      strategy: 'tsyringe'
+    })
+
+    const params = { test: 'test' }
+
+    events.dispatch(EVENT_NAME, params)
+
+    expect(TestClass.prototype.test).toHaveBeenCalledWith(params)
+    expect(TestClass.prototype.test2).toHaveBeenCalledWith(params)
+    expect(TestClass.prototype.test).toHaveBeenCalledTimes(1)
+    expect(TestClass.prototype.test2).toHaveBeenCalledTimes(1)
   })
 })

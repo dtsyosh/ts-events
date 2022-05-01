@@ -47,10 +47,22 @@ export class PointrEvents {
       const metadataKeys = Reflect.getMetadataKeys(instance)
 
       metadataKeys.forEach((key) => {
-        const method = Reflect.getMetadata(key, instance)
+        const value = Reflect.getMetadata(key, instance)
         const prototype = Object.getPrototypeOf(instance)
 
-        this.on(key, prototype[method].bind(instance))
+        // Metadata from method decorator
+        if (typeof value === 'string') {
+          this.on(key, prototype[value].bind(instance))
+
+          return
+        }
+
+        // Metadata from class decorator
+        const methods = Object.getOwnPropertyNames(prototype)
+
+        methods
+          .filter((method) => method !== 'constructor')
+          .forEach((method) => this.on(key, prototype[method].bind(instance)))
       })
     })
   }
