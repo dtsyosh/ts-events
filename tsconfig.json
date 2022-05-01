@@ -8,8 +8,8 @@
 
     /* Modules */
     "module": "commonjs",                                /* Specify what module code is generated. */
-    "rootDir": "./lib",                                  /* Specify the root folder within your source files. */
-    "baseUrl": "./lib",                                  /* Specify the base directory to resolve non-relative module names. */
+    "rootDir": ".",                                  /* Specify the root folder within your source files. */
+    "baseUrl": ".",                                  /* Specify the base directory to resolve non-relative module names. */
 
     /* Emit */
     "declaration": true,
@@ -33,7 +33,7 @@
     "skipLibCheck": true,                                 /* Skip type checking all .d.ts files. */
 
     "paths": {
-      "~/*": ["./src/*"]
+      "~/*": ["./lib/*"]
     },
 
     "emitDecoratorMetadata": true,
@@ -41,7 +41,6 @@
   },
   "exclude": [
     "node_modules",
-    "test",
     "dist"
   ],
 }
