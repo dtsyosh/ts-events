@@ -10,7 +10,7 @@
   "scripts": {
     "test": "jest --passWithNoTests",
     "clean": "rimraf dist",
-    "build": "npm run clean && npm run babel && tsc -p ./tsconfig-build.json",
+    "build": "npm run clean && npm run babel && tsc",
     "babel": "babel lib --out-dir dist --extensions \".ts\" --source-maps inline --copy-files",
     "ci:lint": "eslint --fix --max-warnings=0 \"lib/**/*.ts\"",
     "prerelease": "npm run build && npm version prerelease --preid=alpha && npm publish",
