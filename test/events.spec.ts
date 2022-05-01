@@ -4,6 +4,11 @@ import { PointrEventListener, PointrEvents, TriggersOn } from '../lib'
 import { TriggersOnClass } from '../lib/decorators/triggers-on'
 
 describe('test events', () => {
+  afterEach(() => {
+    container.clearInstances()
+    container.reset()
+    jest.clearAllMocks()
+  })
   it('should add metadata to class with decorator', () => {
     class TestClass implements PointrEventListener {
       @TriggersOn('test')
@@ -186,7 +191,7 @@ describe('test events', () => {
     expect(TestClass2.prototype.test2).toHaveBeenCalledTimes(1)
   })
 
-  it.only('should dispatch events correctly using class decorators with params', async () => {
+  it('should dispatch events correctly using class decorators with params', async () => {
     const EVENT_NAME = 'test'
 
     @TriggersOnClass(EVENT_NAME)
