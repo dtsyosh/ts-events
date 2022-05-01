@@ -38,6 +38,10 @@ export class PointrEvents {
   private addListenersMetadataWithTsyringe(): void {
     const container = this.container as DependencyContainer
 
+    if (!container.isRegistered('PointrEventListener')) {
+      return
+    }
+
     const instances = container.resolveAll<PointrEventListener>('PointrEventListener')
     instances.forEach((instance) => {
       const metadataKeys = Reflect.getMetadataKeys(instance)

@@ -35,7 +35,7 @@ describe('test events', () => {
     expect(metadataKeys).toContain('test2')
   })
 
-  it('should throw an error if try to instantiate PointrEvents without any listener registered in the container', () => {
+  it('should do nothing if try to instantiate PointrEvents without any listener registered in the container', () => {
     container.reset()
 
     expect(
@@ -45,7 +45,7 @@ describe('test events', () => {
           container,
           strategy: 'tsyringe'
         })
-    ).toThrowError('Attempted to resolve unregistered dependency token: "PointrEventListener"')
+    ).not.toThrowError()
   })
 
   it('should instantiate PointrEvents correctly if there is at least one class implementing the PointrEventListener interface', () => {
@@ -119,7 +119,7 @@ describe('test events', () => {
 
     class TestClass implements PointrEventListener {
       @TriggersOn(EVENT_NAME)
-      test(params: any) {
+      test(params: unknown) {
         return params
       }
     }
