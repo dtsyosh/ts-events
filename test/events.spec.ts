@@ -1,7 +1,6 @@
 import 'reflect-metadata'
 import { container } from 'tsyringe'
-import { PointrEventListener, PointrEvents, TriggersOn } from '../lib'
-import { TriggersOnClass } from '../lib/decorators/triggers-on'
+import { PointrEventListener, PointrEvents, TriggersOn, TriggersOnClass } from '../lib'
 
 describe('test events', () => {
   afterEach(() => {
