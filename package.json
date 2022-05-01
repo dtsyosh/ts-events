@@ -67,6 +67,7 @@
     "*.ts": "eslint --fix --max-warnings=0"
   },
   "dependencies": {
+    "@babel/runtime": "^7.17.9",
     "globby": "^11.0.4",
     "tsyringe": "^4.6.0"
   }
