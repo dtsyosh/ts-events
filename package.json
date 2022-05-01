@@ -30,9 +30,6 @@
     "url": "https://github.com/BoardMe/events/issues"
   },
   "homepage": "https://github.com/BoardMe/events#readme",
-  "peerDependencies": {
-    "reflect-metadata": "^0.1.13"
-  },
   "devDependencies": {
     "@babel/cli": "^7.17.10",
     "@babel/core": "^7.17.10",
@@ -69,6 +66,7 @@
   "dependencies": {
     "@babel/runtime": "^7.17.9",
     "globby": "^11.0.4",
+    "reflect-metadata": "^0.1.13",
     "tsyringe": "^4.6.0"
   }
 }
