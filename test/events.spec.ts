@@ -224,4 +224,33 @@ describe('test events', () => {
     expect(TestClass.prototype.test).toHaveBeenCalledTimes(1)
     expect(TestClass.prototype.test2).toHaveBeenCalledTimes(1)
   })
+
+  it('should get correct typing when using getTypedDecorators', () => {
+    const EVENT_NAME = 'test'
+    const events = new PointrEvents({
+      events: [EVENT_NAME],
+      container,
+      strategy: 'tsyringe'
+    })
+
+    const { TriggersOn, TriggersOnClass } = PointrEvents.getTypedDecorators<'test'>()
+    class TestClass implements PointrEventListener {
+      @TriggersOn('test')
+      test() {
+        return
+      }
+    }
+
+    @TriggersOnClass('test')
+    class TestClass2 implements PointrEventListener {
+      test() {
+        return
+      }
+    }
+
+    container.register('PointrEventListener', { useClass: TestClass })
+    container.register('PointrEventListener', { useClass: TestClass2 })
+
+    expect(events.dispatch).not.toThrow()
+  })
 })
