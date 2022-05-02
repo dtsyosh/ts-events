@@ -1,6 +1,6 @@
 import 'reflect-metadata'
 import { container } from 'tsyringe'
-import { PointrEventListener, PointrEvents, TriggersOn, TriggersOnClass } from '../lib'
+import { EventEmitter, EventListener, TriggersOn, TriggersOnClass } from '../lib'
 
 describe('test events', () => {
   afterEach(() => {
@@ -9,7 +9,7 @@ describe('test events', () => {
     jest.clearAllMocks()
   })
   it('should add metadata to class with decorator', () => {
-    class TestClass implements PointrEventListener {
+    class TestClass implements EventListener {
       @TriggersOn('test')
       test() {
         return
@@ -21,7 +21,7 @@ describe('test events', () => {
   })
 
   it('should add metadata to different methods to class with decorator', () => {
-    class TestClass implements PointrEventListener {
+    class TestClass implements EventListener {
       @TriggersOn('test')
       test() {
         return
@@ -45,7 +45,7 @@ describe('test events', () => {
 
     expect(
       () =>
-        new PointrEvents({
+        new EventEmitter({
           events: [],
           container,
           strategy: 'tsyringe'
@@ -54,7 +54,7 @@ describe('test events', () => {
   })
 
   it('should instantiate PointrEvents correctly if there is at least one class implementing the PointrEventListener interface', () => {
-    class TestClass implements PointrEventListener {
+    class TestClass implements EventListener {
       @TriggersOn('test')
       test() {
         return
@@ -62,19 +62,19 @@ describe('test events', () => {
     }
     container.register('PointrEventListener', { useClass: TestClass })
 
-    const events = new PointrEvents({
+    const events = new EventEmitter({
       events: ['test'],
       container,
       strategy: 'tsyringe'
     })
 
-    expect(events).toBeInstanceOf(PointrEvents)
+    expect(events).toBeInstanceOf(EventEmitter)
   })
 
   it('should throw an error if the event is not registered', () => {
     const EVENT_NAME = 'test'
 
-    class TestClass implements PointrEventListener {
+    class TestClass implements EventListener {
       @TriggersOn(EVENT_NAME)
       test() {
         return
@@ -84,7 +84,7 @@ describe('test events', () => {
 
     expect(
       () =>
-        new PointrEvents({
+        new EventEmitter({
           events: ['test2'],
           container,
           strategy: 'tsyringe'
@@ -95,7 +95,7 @@ describe('test events', () => {
   it('should dispatch events correctly', async () => {
     const EVENT_NAME = 'test'
 
-    class TestClass implements PointrEventListener {
+    class TestClass implements EventListener {
       @TriggersOn(EVENT_NAME)
       test() {
         return
@@ -106,7 +106,7 @@ describe('test events', () => {
 
     container.register('PointrEventListener', { useClass: TestClass })
 
-    const events = new PointrEvents({
+    const events = new EventEmitter({
       events: [EVENT_NAME],
       container,
       strategy: 'tsyringe'
@@ -122,7 +122,7 @@ describe('test events', () => {
   it('should dispatch events correctly with params', async () => {
     const EVENT_NAME = 'test'
 
-    class TestClass implements PointrEventListener {
+    class TestClass implements EventListener {
       @TriggersOn(EVENT_NAME)
       test(params: unknown) {
         return params
@@ -133,7 +133,7 @@ describe('test events', () => {
 
     container.register('PointrEventListener', { useClass: TestClass })
 
-    const events = new PointrEvents({
+    const events = new EventEmitter({
       events: [EVENT_NAME],
       container,
       strategy: 'tsyringe'
@@ -150,14 +150,14 @@ describe('test events', () => {
     const EVENT1_NAME = 'test'
     const EVENT2_NAME = 'test2'
 
-    class TestClass implements PointrEventListener {
+    class TestClass implements EventListener {
       @TriggersOn(EVENT1_NAME)
       test() {
         return
       }
     }
 
-    class TestClass2 implements PointrEventListener {
+    class TestClass2 implements EventListener {
       @TriggersOn(EVENT2_NAME)
       test() {
         return
@@ -175,7 +175,7 @@ describe('test events', () => {
     container.register('PointrEventListener', { useClass: TestClass })
     container.register('PointrEventListener', { useClass: TestClass2 })
 
-    const events = new PointrEvents({
+    const events = new EventEmitter({
       events: [EVENT1_NAME, EVENT2_NAME],
       container,
       strategy: 'tsyringe'
@@ -194,7 +194,7 @@ describe('test events', () => {
     const EVENT_NAME = 'test'
 
     @TriggersOnClass(EVENT_NAME)
-    class TestClass implements PointrEventListener {
+    class TestClass implements EventListener {
       test(params: unknown) {
         return params
       }
@@ -209,7 +209,7 @@ describe('test events', () => {
 
     container.register('PointrEventListener', { useClass: TestClass })
 
-    const events = new PointrEvents({
+    const events = new EventEmitter({
       events: [EVENT_NAME],
       container,
       strategy: 'tsyringe'
@@ -227,14 +227,14 @@ describe('test events', () => {
 
   it('should get correct typing when using getTypedDecorators', () => {
     const EVENT_NAME = 'test'
-    const events = new PointrEvents({
+    const events = new EventEmitter<'test'>({
       events: [EVENT_NAME],
       container,
       strategy: 'tsyringe'
     })
 
-    const { TriggersOn, TriggersOnClass } = PointrEvents.getTypedDecorators<'test'>()
-    class TestClass implements PointrEventListener {
+    const { TriggersOn, TriggersOnClass } = EventEmitter.getTypedDecorators<'test'>()
+    class TestClass implements EventListener {
       @TriggersOn('test')
       test() {
         return
@@ -242,15 +242,40 @@ describe('test events', () => {
     }
 
     @TriggersOnClass('test')
-    class TestClass2 implements PointrEventListener {
+    class TestClass2 implements EventListener {
       test() {
         return
       }
     }
 
-    container.register('PointrEventListener', { useClass: TestClass })
-    container.register('PointrEventListener', { useClass: TestClass2 })
+    container.register('EventListener', { useClass: TestClass })
+    container.register('EventListener', { useClass: TestClass2 })
 
-    expect(events.dispatch).not.toThrow()
+    expect(events.dispatch('test')).resolves.toBeUndefined()
+  })
+
+  it('should declare instantiate the event emitter without a strategy', () => {
+    const events = new EventEmitter({
+      events: ['test']
+    })
+
+    expect(events).toBeInstanceOf(EventEmitter)
+  })
+
+  it('should be able to listen to events without using decorators (using .on explicitly)', () => {
+    const EVENT_NAME = 'test'
+    const events = new EventEmitter<'test'>({
+      events: [EVENT_NAME]
+    })
+
+    const listener = jest.fn()
+
+    events.on(EVENT_NAME, listener)
+
+    expect(listener).toHaveBeenCalledTimes(0)
+
+    events.dispatch(EVENT_NAME)
+
+    expect(listener).toHaveBeenCalledTimes(1)
   })
 })

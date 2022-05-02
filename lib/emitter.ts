@@ -2,27 +2,26 @@ import 'reflect-metadata'
 import { DependencyContainer } from 'tsyringe'
 import { TriggersOn } from '~/decorators/triggers-on'
 import { TriggersOnClass } from '~/decorators/triggers-on-class'
-import { FactoryParams, Listener, PointrEventListener, Subscriber } from '~/interfaces'
+import { EventListener, FactoryParams, Listener, Subscriber } from '~/interfaces'
 
-export class PointrEvents<EventsNames extends string> {
+export default class EventEmitter<EventsNames extends string> {
   private events: Array<EventsNames>
   private subscribers: Subscriber<EventsNames> = {} as Subscriber<EventsNames>
-  private strategy: 'tsyringe'
+  private strategy: 'tsyringe' | 'none'
   private container?: DependencyContainer
 
   constructor(params: FactoryParams<EventsNames>) {
     this.events = params.events
-    this.strategy = params.strategy
+    this.strategy = params.strategy ?? 'none'
     this.container = params.container
 
     this.initializeEvents()
     this.addListenersMetadata()
   }
 
-  async dispatch<T>(event: EventsNames, params?: T): Promise<void> {
+  async dispatch<T>(event: EventsNames, payload?: T): Promise<void> {
     this.preventUnnamedEventsToProceed(event)
-
-    await Promise.all(this.subscribers[event].map((listener) => listener(params)))
+    await Promise.all(this.subscribers[event].map((listener) => listener(payload)))
   }
 
   on(event: EventsNames, listener: Listener): void {
@@ -46,12 +45,11 @@ export class PointrEvents<EventsNames extends string> {
 
   private addListenersMetadataWithTsyringe(): void {
     const container = this.container as DependencyContainer
-
     if (!container.isRegistered('PointrEventListener')) {
       return
     }
 
-    const instances = container.resolveAll<PointrEventListener>('PointrEventListener')
+    const instances = container.resolveAll<EventListener>('PointrEventListener')
     instances.forEach((instance) => {
       const metadataKeys = Reflect.getMetadataKeys(instance)
 
