@@ -17,4 +17,5 @@ export type FactoryParams<T> =
 
 export type Subscriber<EventsNames extends string> = Record<EventsNames, Listener[]>
 
-export type Listener = (params: unknown) => void
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type Listener = (params?: any) => void
