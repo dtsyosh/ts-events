@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - v0.x
+      - v1.x
 
 jobs:
   build-and-publish:
