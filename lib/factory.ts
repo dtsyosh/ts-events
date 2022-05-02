@@ -1,14 +1,16 @@
 import 'reflect-metadata'
 import { DependencyContainer } from 'tsyringe'
+import { TriggersOn } from '~/decorators/triggers-on'
+import { TriggersOnClass } from '~/decorators/triggers-on-class'
 import { FactoryParams, Listener, PointrEventListener, Subscriber } from '~/interfaces'
 
-export class PointrEvents {
-  private events: Array<string>
-  private subscribers: Subscriber = {}
-  private strategy: string
+export class PointrEvents<EventsNames extends string> {
+  private events: Array<EventsNames>
+  private subscribers: Subscriber<EventsNames> = {} as Subscriber<EventsNames>
+  private strategy: 'tsyringe'
   private container?: DependencyContainer
 
-  constructor(params: FactoryParams) {
+  constructor(params: FactoryParams<EventsNames>) {
     this.events = params.events
     this.strategy = params.strategy
     this.container = params.container
@@ -17,16 +19,23 @@ export class PointrEvents {
     this.addListenersMetadata()
   }
 
-  async dispatch<T>(event: string, params?: T): Promise<void> {
+  async dispatch<T>(event: EventsNames, params?: T): Promise<void> {
     this.preventUnnamedEventsToProceed(event)
 
     await Promise.all(this.subscribers[event].map((listener) => listener(params)))
   }
 
-  on(event: string, listener: Listener): void {
+  on(event: EventsNames, listener: Listener): void {
     this.preventUnnamedEventsToProceed(event)
 
     this.subscribers[event].push(listener)
+  }
+
+  getTypedDecorators() {
+    return {
+      TriggersOn: (event: EventsNames) => TriggersOn(event),
+      TriggersOnClass: (event: EventsNames) => TriggersOnClass(event)
+    }
   }
 
   private addListenersMetadata(): void {
@@ -73,11 +82,11 @@ export class PointrEvents {
     })
   }
 
-  private checkIfEventExists(event: string): boolean {
+  private checkIfEventExists(event: EventsNames): boolean {
     return this.events.includes(event)
   }
 
-  private preventUnnamedEventsToProceed(event: string): void {
+  private preventUnnamedEventsToProceed(event: EventsNames): void {
     if (!this.checkIfEventExists(event)) {
       throw new Error(`Event ${event} is not registered`)
     }
