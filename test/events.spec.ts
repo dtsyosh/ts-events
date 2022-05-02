@@ -53,14 +53,14 @@ describe('test events', () => {
     ).not.toThrowError()
   })
 
-  it('should instantiate PointrEvents correctly if there is at least one class implementing the PointrEventListener interface', () => {
+  it('should instantiate PointrEvents correctly if there is at least one class implementing the EventListener interface', () => {
     class TestClass implements EventListener {
       @TriggersOn('test')
       test() {
         return
       }
     }
-    container.register('PointrEventListener', { useClass: TestClass })
+    container.register('EventListener', { useClass: TestClass })
 
     const events = new EventEmitter({
       events: ['test'],
@@ -80,7 +80,7 @@ describe('test events', () => {
         return
       }
     }
-    container.register('PointrEventListener', { useClass: TestClass })
+    container.register('EventListener', { useClass: TestClass })
 
     expect(
       () =>
@@ -104,7 +104,7 @@ describe('test events', () => {
 
     jest.spyOn(TestClass.prototype, 'test')
 
-    container.register('PointrEventListener', { useClass: TestClass })
+    container.register('EventListener', { useClass: TestClass })
 
     const events = new EventEmitter({
       events: [EVENT_NAME],
@@ -131,7 +131,7 @@ describe('test events', () => {
 
     jest.spyOn(TestClass.prototype, 'test')
 
-    container.register('PointrEventListener', { useClass: TestClass })
+    container.register('EventListener', { useClass: TestClass })
 
     const events = new EventEmitter({
       events: [EVENT_NAME],
@@ -172,8 +172,8 @@ describe('test events', () => {
     jest.spyOn(TestClass2.prototype, 'test')
     jest.spyOn(TestClass2.prototype, 'test2')
 
-    container.register('PointrEventListener', { useClass: TestClass })
-    container.register('PointrEventListener', { useClass: TestClass2 })
+    container.register('EventListener', { useClass: TestClass })
+    container.register('EventListener', { useClass: TestClass2 })
 
     const events = new EventEmitter({
       events: [EVENT1_NAME, EVENT2_NAME],
@@ -207,7 +207,7 @@ describe('test events', () => {
     jest.spyOn(TestClass.prototype, 'test')
     jest.spyOn(TestClass.prototype, 'test2')
 
-    container.register('PointrEventListener', { useClass: TestClass })
+    container.register('EventListener', { useClass: TestClass })
 
     const events = new EventEmitter({
       events: [EVENT_NAME],
