@@ -31,7 +31,7 @@ export class PointrEvents<EventsNames extends string> {
     this.subscribers[event].push(listener)
   }
 
-  getTypedDecorators() {
+  static getTypedDecorators<EventsNames extends string>() {
     return {
       TriggersOn: (event: EventsNames) => TriggersOn(event),
       TriggersOnClass: (event: EventsNames) => TriggersOnClass(event)
