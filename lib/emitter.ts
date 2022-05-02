@@ -45,11 +45,11 @@ export default class EventEmitter<EventsNames extends string> {
 
   private addListenersMetadataWithTsyringe(): void {
     const container = this.container as DependencyContainer
-    if (!container.isRegistered('PointrEventListener')) {
+    if (!container.isRegistered('EventListener')) {
       return
     }
 
-    const instances = container.resolveAll<EventListener>('PointrEventListener')
+    const instances = container.resolveAll<EventListener>('EventListener')
     instances.forEach((instance) => {
       const metadataKeys = Reflect.getMetadataKeys(instance)
 
