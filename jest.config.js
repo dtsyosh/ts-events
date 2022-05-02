@@ -4,7 +4,7 @@ module.exports = {
   testEnvironment: 'node',
   globals: {
     'ts-jest': {
-      tsconfig: './tsconfig-test.json'
+      tsconfig: './tsconfig.jest.json'
     }
   },
 
@@ -15,5 +15,9 @@ module.exports = {
       lines: 100,
       statements: 100
     }
+  },
+
+  moduleNameMapper: {
+    '^~/(.*)$': '<rootDir>/lib/$1'
   }
 }
