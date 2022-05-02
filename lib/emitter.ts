@@ -19,7 +19,7 @@ export default class EventEmitter<EventsNames extends string> {
     this.addListenersMetadata()
   }
 
-  async dispatch<T>(event: EventsNames, payload?: T): Promise<void> {
+  async emit<T>(event: EventsNames, payload?: T): Promise<void> {
     this.preventUnnamedEventsToProceed(event)
     await Promise.all(this.subscribers[event].map((listener) => listener(payload)))
   }

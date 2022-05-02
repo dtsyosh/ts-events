@@ -112,9 +112,9 @@ describe('test events', () => {
       strategy: 'tsyringe'
     })
 
-    events.dispatch(EVENT_NAME)
-    events.dispatch(EVENT_NAME)
-    events.dispatch(EVENT_NAME)
+    events.emit(EVENT_NAME)
+    events.emit(EVENT_NAME)
+    events.emit(EVENT_NAME)
 
     expect(TestClass.prototype.test).toHaveBeenCalledTimes(3)
   })
@@ -141,7 +141,7 @@ describe('test events', () => {
 
     const params = { test: 'test' }
 
-    events.dispatch(EVENT_NAME, params)
+    events.emit(EVENT_NAME, params)
 
     expect(TestClass.prototype.test).toHaveBeenCalledWith(params)
   })
@@ -181,9 +181,9 @@ describe('test events', () => {
       strategy: 'tsyringe'
     })
 
-    events.dispatch(EVENT1_NAME)
-    events.dispatch(EVENT2_NAME)
-    events.dispatch(EVENT2_NAME)
+    events.emit(EVENT1_NAME)
+    events.emit(EVENT2_NAME)
+    events.emit(EVENT2_NAME)
 
     expect(TestClass.prototype.test).toHaveBeenCalledTimes(1)
     expect(TestClass2.prototype.test).toHaveBeenCalledTimes(2)
@@ -217,7 +217,7 @@ describe('test events', () => {
 
     const params = { test: 'test' }
 
-    events.dispatch(EVENT_NAME, params)
+    events.emit(EVENT_NAME, params)
 
     expect(TestClass.prototype.test).toHaveBeenCalledWith(params)
     expect(TestClass.prototype.test2).toHaveBeenCalledWith(params)
@@ -251,7 +251,7 @@ describe('test events', () => {
     container.register('EventListener', { useClass: TestClass })
     container.register('EventListener', { useClass: TestClass2 })
 
-    expect(events.dispatch('test')).resolves.toBeUndefined()
+    expect(events.emit('test')).resolves.toBeUndefined()
   })
 
   it('should declare instantiate the event emitter without a strategy', () => {
@@ -274,7 +274,7 @@ describe('test events', () => {
 
     expect(listener).toHaveBeenCalledTimes(0)
 
-    events.dispatch(EVENT_NAME)
+    events.emit(EVENT_NAME)
 
     expect(listener).toHaveBeenCalledTimes(1)
   })
