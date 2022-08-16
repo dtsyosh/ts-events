@@ -9,8 +9,9 @@ jobs:
   build-and-publish:
     name: Build and Publish
     runs-on: ubuntu-20.04
-    env:
-      PERSONAL_PKG_TOKEN: ${{secrets.PUBLISH_PKG_TOKEN}}
+    permissions:
+      packages: write
+      contents: read
     steps:
       - name: Build - Git Checkout
         uses: actions/checkout@v2
@@ -19,7 +20,6 @@ jobs:
         with:
           node-version: 14
           registry-url: https://npm.pkg.github.com/
-          scope: '@dtsyosh'
       - name: Build - NPM Install
         run: npm install
       - name: Test - Running tests
