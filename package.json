@@ -1,5 +1,5 @@
 {
-  "name": "@boardme/events",
+  "name": "@dtsyosh/ts-events",
   "version": "1.1.0",
   "description": "Package description",
   "main": "dist/index.js",
@@ -18,18 +18,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/BoardMe/events.git"
+    "url": "git+https://github.com/dtsyosh/ts-events.git"
   },
   "keywords": [
     "Pointr",
     "utility"
   ],
-  "author": "Diego Tsuyoshi <diego@pointr.co>",
+  "author": "Diego Tsuyoshi <diego@tsuyoshi.com.br>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/BoardMe/events/issues"
+    "url": "https://github.com/dtsyosh/ts-events/issues"
   },
-  "homepage": "https://github.com/BoardMe/events#readme",
+  "homepage": "https://github.com/dtsyosh/ts-events#readme",
   "devDependencies": {
     "@babel/cli": "^7.17.10",
     "@babel/core": "^7.17.10",

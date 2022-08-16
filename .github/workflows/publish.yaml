@@ -3,7 +3,6 @@ name: Publish to Github Packages
 on:
   push:
     branches:
-      - v0.x
       - v1.x
 
 jobs:
@@ -20,7 +19,7 @@ jobs:
         with:
           node-version: 14
           registry-url: https://npm.pkg.github.com/
-          scope: '@BoardMe'
+          scope: '@dtsyosh'
       - name: Build - NPM Install
         run: npm install
       - name: Test - Running tests

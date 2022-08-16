@@ -1,4 +1,4 @@
-# Pointr Events Package
+# Events Package
 
 This package was design to make it easy to implement an Event Driven architecture.
 
@@ -84,8 +84,8 @@ class MyEventEmitter {
     })
   }
 
-  dispatch<T extends MyEventsName>(event: T, data: MyEvents[T]) {
-    this.emitter.dispatch(event, data)
+  emit<T extends MyEventsName>(event: T, data: MyEvents[T]) {
+    this.emitter.emit(event, data)
   }
 
   on<T extends MyEventsName>(event: T, callback: (data: MyEvents[T]) => void) {
