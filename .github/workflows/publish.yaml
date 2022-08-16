@@ -10,7 +10,7 @@ jobs:
     name: Build and Publish
     runs-on: ubuntu-20.04
     env:
-      POINTR_PKG_TOKEN: ${{secrets.PUBLISH_PKG_TOKEN}}
+      PERSONAL_PKG_TOKEN: ${{secrets.PUBLISH_PKG_TOKEN}}
     steps:
       - name: Build - Git Checkout
         uses: actions/checkout@v2
