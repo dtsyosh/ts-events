@@ -36,8 +36,8 @@ describe('test events', () => {
     const metadataKeys = Reflect.getMetadataKeys(testClass)
 
     expect(metadataKeys).toHaveLength(2)
-    expect(metadataKeys).toContain('test')
-    expect(metadataKeys).toContain('test2')
+    expect(metadataKeys).toContain('test:test')
+    expect(metadataKeys).toContain('test2:test2')
   })
 
   it('should do nothing if try to instantiate PointrEvents without any listener registered in the container', () => {
@@ -277,5 +277,37 @@ describe('test events', () => {
     events.emit(EVENT_NAME)
 
     expect(listener).toHaveBeenCalledTimes(1)
+  })
+
+  it('should execute all methods that are decorated with the same event name', () => {
+    const EVENT_NAME = 'test'
+
+    class TestClass implements EventListener {
+      @TriggersOn(EVENT_NAME)
+      test() {
+        return
+      }
+
+      @TriggersOn(EVENT_NAME)
+      test2() {
+        return
+      }
+    }
+
+    jest.spyOn(TestClass.prototype, 'test')
+    jest.spyOn(TestClass.prototype, 'test2')
+
+    container.register('EventListener', { useClass: TestClass })
+
+    const events = new EventEmitter<'test'>({
+      events: [EVENT_NAME],
+      container,
+      strategy: 'tsyringe'
+    })
+
+    events.emit(EVENT_NAME)
+
+    expect(TestClass.prototype.test).toHaveBeenCalledTimes(1)
+    expect(TestClass.prototype.test2).toHaveBeenCalledTimes(1)
   })
 })

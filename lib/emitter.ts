@@ -57,9 +57,11 @@ export default class EventEmitter<EventsNames extends string> {
         const value = Reflect.getMetadata(key, instance)
         const prototype = Object.getPrototypeOf(instance)
 
+        const [event] = key.split(':')
+
         // Metadata from method decorator
         if (typeof value === 'string') {
-          this.on(key, prototype[value].bind(instance))
+          this.on(event, prototype[value].bind(instance))
 
           return
         }

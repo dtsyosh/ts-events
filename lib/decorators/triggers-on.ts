@@ -5,7 +5,7 @@
  */
 export const TriggersOn = (event: string): MethodDecorator => {
   return function (target, propertyKey, descriptor) {
-    Reflect.defineMetadata(event, propertyKey, target)
+    Reflect.defineMetadata(`${event}:${String(propertyKey)}`, propertyKey, target)
 
     return descriptor
   }
