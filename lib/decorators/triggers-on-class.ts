@@ -3,8 +3,12 @@
  * @param event Event that triggers the decorator
  * @returns void
  */
-export const TriggersOnClass = (event: string): ClassDecorator => {
+export const TriggersOnClass = (...event: string[]): ClassDecorator => {
   return function (target) {
-    Reflect.defineMetadata(event, target, target.prototype)
+    const uniqueEvents = [...new Set(event)]
+
+    uniqueEvents.forEach((event) => {
+      Reflect.defineMetadata(event, target, target.prototype)
+    })
   }
 }

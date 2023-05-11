@@ -3,9 +3,13 @@
  * @param event Event that triggers the decorator
  * @returns void
  */
-export const TriggersOn = (event: string): MethodDecorator => {
+export const TriggersOn = (...events: string[]): MethodDecorator => {
   return function (target, propertyKey, descriptor) {
-    Reflect.defineMetadata(`${event}:${String(propertyKey)}`, propertyKey, target)
+    const uniqueEvents = [...new Set(events)]
+
+    uniqueEvents.forEach((event) => {
+      Reflect.defineMetadata(`${event}:${String(propertyKey)}`, propertyKey, target)
+    })
 
     return descriptor
   }

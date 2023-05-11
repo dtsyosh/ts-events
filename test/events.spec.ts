@@ -310,4 +310,120 @@ describe('test events', () => {
     expect(TestClass.prototype.test).toHaveBeenCalledTimes(1)
     expect(TestClass.prototype.test2).toHaveBeenCalledTimes(1)
   })
+
+  it('should trigger the method for more than one event', () => {
+    const EVENT_NAME = 'test'
+    const EVENT_NAME2 = 'test2'
+
+    class TestClass implements EventListener {
+      @TriggersOn(EVENT_NAME, EVENT_NAME2)
+      test() {
+        return
+      }
+    }
+
+    jest.spyOn(TestClass.prototype, 'test')
+
+    container.register('EventListener', { useClass: TestClass })
+
+    const events = new EventEmitter<'test' | 'test2'>({
+      events: [EVENT_NAME, EVENT_NAME2],
+      container,
+      strategy: 'tsyringe'
+    })
+
+    events.emit(EVENT_NAME)
+    events.emit(EVENT_NAME2)
+
+    expect(TestClass.prototype.test).toHaveBeenCalledTimes(2)
+  })
+
+  it('should trigger the method for more than one event using class decorators', () => {
+    const EVENT_NAME = 'test'
+    const EVENT_NAME2 = 'test2'
+
+    @TriggersOnClass(EVENT_NAME, EVENT_NAME2)
+    class TestClass implements EventListener {
+      test() {
+        return
+      }
+    }
+
+    jest.spyOn(TestClass.prototype, 'test')
+
+    container.register('EventListener', { useClass: TestClass })
+
+    const events = new EventEmitter<'test' | 'test2'>({
+      events: [EVENT_NAME, EVENT_NAME2],
+      container,
+      strategy: 'tsyringe'
+    })
+
+    events.emit(EVENT_NAME)
+    events.emit(EVENT_NAME2)
+
+    expect(TestClass.prototype.test).toHaveBeenCalledTimes(2)
+  })
+
+  it('should trigger the method for more than one event with correct payloads', () => {
+    const EVENT_NAME = 'test'
+    const EVENT_NAME2 = 'test2'
+
+    class TestClass implements EventListener {
+      @TriggersOn(EVENT_NAME, EVENT_NAME2)
+      test(payload: unknown) {
+        return payload
+      }
+    }
+
+    jest.spyOn(TestClass.prototype, 'test')
+
+    container.register('EventListener', { useClass: TestClass })
+
+    const events = new EventEmitter<'test' | 'test2'>({
+      events: [EVENT_NAME, EVENT_NAME2],
+      container,
+      strategy: 'tsyringe'
+    })
+
+    const payload = { test: 'test' }
+    const payload2 = { test: 'test2' }
+
+    events.emit(EVENT_NAME, payload)
+    events.emit(EVENT_NAME2, payload2)
+
+    expect(TestClass.prototype.test).toHaveBeenNthCalledWith(1, payload)
+    expect(TestClass.prototype.test).toHaveBeenNthCalledWith(2, payload2)
+  })
+
+  it('should trigger the method for more than one event with correct payloads using class decorators', () => {
+    const EVENT_NAME = 'test'
+    const EVENT_NAME2 = 'test2'
+
+    @TriggersOnClass(EVENT_NAME, EVENT_NAME2)
+    class TestClass implements EventListener {
+      test(payload: unknown) {
+        return payload
+      }
+    }
+
+    jest.spyOn(TestClass.prototype, 'test')
+
+    container.register('EventListener', { useClass: TestClass })
+
+    const events = new EventEmitter<'test' | 'test2'>({
+      events: [EVENT_NAME, EVENT_NAME2],
+      container,
+      strategy: 'tsyringe'
+    })
+
+    const payload = { test: 'test' }
+    const payload2 = { test: 'test2' }
+
+    events.emit(EVENT_NAME, payload)
+    events.emit(EVENT_NAME2, payload2)
+
+    expect(TestClass.prototype.test).toHaveBeenNthCalledWith(1, payload)
+    expect(TestClass.prototype.test).toHaveBeenNthCalledWith(2, payload2)
+  })
 })
